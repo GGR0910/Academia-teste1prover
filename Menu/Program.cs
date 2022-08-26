@@ -1,6 +1,8 @@
 ﻿using ClassLibary_entities;
+using ConsoleTables;
 using MySqlX.XDevAPI.Common;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace Menu
 {
@@ -16,99 +18,89 @@ namespace Menu
             Console.WriteLine("Selecione a opção desejada:");
             Console.WriteLine("1-Cadastrar funcionário.");
             Console.WriteLine("2-Cadastrar novo aparelho.");
+            Console.WriteLine("3-Listar aparelhos.");
+            Console.WriteLine("4-Listar funcionários.");
             Console.WriteLine("0-Fechar menu.");
 
             string escolha;
             escolha = Console.ReadLine();
-            int result;
-            
-
-
             try
             {
-                result = int.Parse(escolha);
-                Funcoes.verifica_numero(result);
+                int result = int.Parse(escolha);
+
+                switch (result)
+                {
+                    case 1:
+                        try
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Registrando funcionário, para retornar ao menu digite sair:");
+                            Funcionario.registrarfuncionario();
+                            Console.Clear();
+                            Console.Clear();
+                            Console.WriteLine($"Funcionario {Funcionario.Nome} registrado! Tecle enter para continuar.");
+                            Console.ReadLine();
+                            Funcionario.listarfuncionarios();
+                        }
+                        catch
+                        {
+                            Console.Clear();
+                            goto Menuinicio;
+                        }
+                        break;
+
+                    case 2:
+                        try
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Registrando aparelho, para retornar ao menu digite sair:");
+                            Equipamento.registrarequipamento();
+                            Console.Clear();
+                            Console.WriteLine($"Aparelho {Equipamento.Nome} registrado! Tecle enter para retornar.");
+                            Console.ReadLine();
+                            Equipamento.listarequipamentos();
+                        }
+                        catch (Exception_return_menu)
+                        {
+                            Console.Clear();
+                            goto Menuinicio;
+                        }
+                        break;
+                    case 3:
+                        try { Equipamento.listarequipamentos(); }
+                        catch (Exception_return_menu) { Console.Clear(); goto Menuinicio; }
+                        break;
+
+                    case 4:
+                        try
+                        {Funcionario.listarfuncionarios();}
+                        catch (Exception_return_menu)
+                        { Console.Clear(); goto Menuinicio;}
+                        break;
+                    case 0:
+                        Console.Clear();
+                        Console.WriteLine("Até mais.");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        throw new Exception_return_menu();
+                }
             }
-            catch (ArgumentException)
+            catch (FormatException)
             {
-                Funcoes.recarga_inicio();
+                Console.WriteLine("Por favor, selecione uma das opções. Tecle enter para continuar.");
+                Console.ReadLine();
+                Console.Clear();
                 goto Menuinicio;
             }
-            catch(FormatException)
-            {
-                Funcoes.recarga_inicio();
+            catch (Exception_return_menu) {
+                Console.WriteLine("Por favor, selecione uma das opções. Tecle enter para continuar.");
+                Console.ReadLine();
+                Console.Clear();
                 goto Menuinicio;
-            }
-
-
-
-
-            if (result == 1)
-            {
-                Console.Clear();
-                Console.WriteLine("Registrando funcionário, para retornar ao menu digite 0:");
-                bool resultado = Funcionario.registrarfuncionario();
-                Console.Clear();
-                if (resultado == false)
-                {
-                    Console.Clear();
-                    goto Menuinicio;
-                }
-
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine("Funcionario registrado!");
-                    int resposta = Funcoes.verifica();
-                    if (resposta == 1)
-                    {
-                        Console.Clear();
-                        goto Menuinicio;
-                    }
-                    if (resposta == 0)
-                    {
-                        Console.WriteLine("Encerrando");
-                        Environment.Exit(0);
-                    }
-                }
-            }
-
-
-            if (result == 2)
-            {
-                Console.Clear();
-                Console.WriteLine("Registrando aparelho, para retornar ao menu digite 0:");
-                bool resultado = Equipamento.registrarequipamento();
-                
-
-                if  (resultado == false) {
-                    Console.Clear();
-                    goto Menuinicio; }
-
-                else {
-                    Console.Clear();
-                    Console.WriteLine("Aparelho registrado!");
-                    int resposta = Funcoes.verifica();
-                    if (resposta == 1)
-                    {
-                        Console.Clear();
-                        goto Menuinicio;
-                    }
-                    if (resposta == 0)
-                    {
-                        Console.WriteLine("Encerrando");
-                        Environment.Exit(0);
-                    } }
-
-                if(result == 0)
-                { }
-                    Environment.Exit(0);
-                }
-
-
-
             }
 
 
         }
     }
+}
